@@ -24,13 +24,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      - run: make install
-      - run: make lint
-      - name: Test & publish code coverage
-        uses: paambaati/codeclimate-action@v3.2.0
+
+      - name: Install dependencies, build the project
+        run: |
+          npm ci
+          npm run build:prod
+
         env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        with:
-          coverageCommand: make test-coverage
-          debug: true
+          CI: true
+
+      - name: Run linter
+        run: make lint
